@@ -27,7 +27,7 @@ public class ProyectoSistemasOperativos {
         int TiempoLlegadaMaximo=10; //Cota máxima para asignar tiempo de llegada de un proceso padre
         
         //Parámetros para generación de procesos hijo
-        int probabilidadCrearHijo=5; //Probabilidad máxima que permite crear un proceso hijo
+        int probabilidadCrearHijo=2; //Probabilidad máxima que permite crear un proceso hijo
         int burstTimeMinimoHijo=10; //Cota mínima para asignar burst time a un proceso hijo
         int burstTimeMaximoHijo=15; //Cota máxima para asignar burst time a un proceso hijo
         
@@ -122,7 +122,8 @@ public class ProyectoSistemasOperativos {
             
             //(0) Inicio de la simulación de la política
             System.out.println("******* INICIO - Algoritmo : "+algoritmo+" - Esquema Expropiativo: "+EsquemaExpropiativo+" *******");
-            System.out.println("**** Valores padres *******");
+            System.out.println("**** Valores pa"
+                    + "dres *******");
             for(Pcb proceso:procesosPadres){
                 System.out.println(proceso.toString());
             }
