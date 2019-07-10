@@ -67,6 +67,8 @@ public class ProyectoSistemasOperativos {
     
     public static ArrayList<RecursoHardware> recursosHardware = new ArrayList<>();
     public static ArrayList<Politica> politicasSistema = new ArrayList<>();
+    
+    public static ArrayList<ArrayList<ArrayList<PcbIO>>> ListaColasIO = new ArrayList<>(3);
 
     /**
      * @param args the command line arguments
@@ -94,7 +96,6 @@ public class ProyectoSistemasOperativos {
 //        procesosTerminados = new ArrayList<>();
 //        procesoEjecutandose = new ArrayList<>();
         //Lista para almacenar las listas y colas de los dispositivos IO
-        ArrayList<ArrayList<ArrayList<PcbIO>>> ListaColasIO = new ArrayList<>(3);
         ListaColasIO = HerramientasUtiles.CrearListaDeColasIO(recursosHardware, ListaColasIO);
 
         // (0) INICIO DEL PROGRAMA

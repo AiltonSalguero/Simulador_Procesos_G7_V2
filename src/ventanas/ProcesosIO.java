@@ -5,17 +5,52 @@
  */
 package ventanas;
 
-/**
- *
- * @author ailton
- */
+import java.awt.Color;
+import javax.swing.JPanel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.DatasetUtilities;
+import proyectosistemasoperativos.ProyectoSistemasOperativos;
+
 public class ProcesosIO extends javax.swing.JFrame {
+
+    public static JFreeChart barChart_DiscoDuro;
+    public static JFreeChart barChart_Impresora;
+    public static JFreeChart barChart_Teclado;
+
+    ProyectoSistemasOperativos proyectoSistemasOperativos;
+
+    public Thread hiloActualizarBarras = new Thread(new HiloRefrescarBarras());
 
     /**
      * Creates new form ProcesosIO
      */
     public ProcesosIO() {
         initComponents();
+        proyectoSistemasOperativos = new ProyectoSistemasOperativos();
+
+        double[][] data = {{0}, {0}, {0}, {0}};
+        CategoryDataset dataset = DatasetUtilities.createCategoryDataset("Estado", "", data);
+
+        barChart_DiscoDuro = ChartFactory.createBarChart("", "Proceso", "Progreso", dataset, PlotOrientation.HORIZONTAL, true, true, true);
+        barChart_Impresora = ChartFactory.createBarChart("", "Proceso", "Progreso", dataset, PlotOrientation.HORIZONTAL, true, true, true);
+        barChart_Teclado = ChartFactory.createBarChart("", "Proceso", "Progreso", dataset, PlotOrientation.HORIZONTAL, true, true, true);
+        hiloActualizarBarras.start();
+    }
+
+    private class HiloRefrescarBarras implements Runnable { //Objeto de tipo Hilo con extension ejecutable
+
+        @Override
+        public void run() {
+            refrescarTablaContadores("DiscoDuro");
+            refrescarTablaContadores("Impresora");
+            refrescarTablaContadores("Teclado");
+        }
     }
 
     /**
@@ -27,21 +62,174 @@ public class ProcesosIO extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFrame1 = new javax.swing.JFrame();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanelTeclado = new javax.swing.JPanel();
+        jPanelDiscoDuro = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jPanelImpresora = new javax.swing.JPanel();
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1280, 720));
+        setResizable(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1711, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 473, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Disco Duro", jPanel1);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1711, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 473, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Impresora", jPanel3);
+
+        jPanelTeclado.setPreferredSize(new java.awt.Dimension(800, 600));
+
+        javax.swing.GroupLayout jPanelTecladoLayout = new javax.swing.GroupLayout(jPanelTeclado);
+        jPanelTeclado.setLayout(jPanelTecladoLayout);
+        jPanelTecladoLayout.setHorizontalGroup(
+            jPanelTecladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        jPanelTecladoLayout.setVerticalGroup(
+            jPanelTecladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 600, Short.MAX_VALUE)
+        );
+
+        jPanelDiscoDuro.setPreferredSize(new java.awt.Dimension(800, 400));
+
+        javax.swing.GroupLayout jPanelDiscoDuroLayout = new javax.swing.GroupLayout(jPanelDiscoDuro);
+        jPanelDiscoDuro.setLayout(jPanelDiscoDuroLayout);
+        jPanelDiscoDuroLayout.setHorizontalGroup(
+            jPanelDiscoDuroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        jPanelDiscoDuroLayout.setVerticalGroup(
+            jPanelDiscoDuroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(93, 93, 93)
+                .addComponent(jPanelDiscoDuro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addComponent(jPanelDiscoDuro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Teclado", jPanel5);
+
+        jLabel1.setText("PROCESOS I/O");
+
+        jButton1.setText("Volver");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelImpresoraLayout = new javax.swing.GroupLayout(jPanelImpresora);
+        jPanelImpresora.setLayout(jPanelImpresoraLayout);
+        jPanelImpresoraLayout.setHorizontalGroup(
+            jPanelImpresoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        jPanelImpresoraLayout.setVerticalGroup(
+            jPanelImpresoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(163, 163, 163))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(596, 596, 596)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(177, 177, 177)
+                        .addComponent(jPanelImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(763, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jTabbedPane1)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
+                .addComponent(jPanelImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(82, 82, 82)
+                .addComponent(jButton1)
+                .addGap(25, 25, 25))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(110, 110, 110)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(110, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -78,6 +266,73 @@ public class ProcesosIO extends javax.swing.JFrame {
         });
     }
 
+    public void refrescarTablaContadores(String tipo) {
+        int ejecutando = 0;
+        int listos = 0;
+        int terminados = 0;
+        JFreeChart barChart = null;
+        JPanel jPanelBar = null;
+
+        switch (tipo) {
+            case "Teclado": {
+                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(0).size();
+                listos = proyectoSistemasOperativos.ListaColasIO.get(1).size();
+                terminados = proyectoSistemasOperativos.ListaColasIO.get(2).size();
+                barChart = barChart_Teclado;
+                jPanelBar = jPanelTeclado;
+            }
+            case "DiscoDuro": {
+                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(0).size();
+                listos = proyectoSistemasOperativos.ListaColasIO.get(1).size();
+                terminados = proyectoSistemasOperativos.ListaColasIO.get(2).size();
+                barChart = barChart_DiscoDuro;
+                jPanelBar = jPanelDiscoDuro;
+            }
+            case "Impresora": {
+                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(0).size();
+                listos = proyectoSistemasOperativos.ListaColasIO.get(1).size();
+                terminados = proyectoSistemasOperativos.ListaColasIO.get(2).size();
+                barChart = barChart_Impresora;
+                jPanelBar = jPanelImpresora;
+            }
+        }
+
+        double[][] data = {{ejecutando}, {listos}, {terminados}};
+
+        Comparable comparable1 = (Comparable) ("Ejecutando");
+        Comparable comparable2 = (Comparable) ("Listo");
+        Comparable comparable3 = (Comparable) ("Terminado");
+        Comparable[] estados = {comparable1, comparable2, comparable3};
+        Comparable[] prog = {(Comparable) ("Progreso")};
+
+        CategoryDataset dataset = DatasetUtilities.createCategoryDataset(estados, prog, data);
+
+        CategoryPlot barChartPlot = barChart.getCategoryPlot();
+        barChartPlot.setDataset(dataset);
+
+        BarRenderer br = (BarRenderer) barChartPlot.getRenderer();
+        br.setMaximumBarWidth(.30);
+        barChartPlot.getRenderer().setSeriesPaint(0, new Color(0, 255, 0));
+        barChartPlot.getRenderer().setSeriesPaint(1, new Color(0, 0, 255));
+        barChartPlot.getRenderer().setSeriesPaint(2, new Color(0, 230, 255));
+
+        ChartPanel bar_Panel = new ChartPanel(barChart);
+        bar_Panel.setSize(800, 400);
+
+        jPanelBar.add(bar_Panel);
+        jPanelBar.setSize(800, 400);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JFrame jFrame1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel5;
+    private static javax.swing.JPanel jPanelDiscoDuro;
+    private javax.swing.JPanel jPanelImpresora;
+    private static javax.swing.JPanel jPanelTeclado;
+    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
