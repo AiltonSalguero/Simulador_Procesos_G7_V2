@@ -6,6 +6,8 @@
 package ventanas;
 
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -40,6 +42,43 @@ public class ProcesosIO extends javax.swing.JFrame {
         barChart_DiscoDuro = ChartFactory.createBarChart("", "Proceso", "Progreso", dataset, PlotOrientation.HORIZONTAL, true, true, true);
         barChart_Impresora = ChartFactory.createBarChart("", "Proceso", "Progreso", dataset, PlotOrientation.HORIZONTAL, true, true, true);
         barChart_Teclado = ChartFactory.createBarChart("", "Proceso", "Progreso", dataset, PlotOrientation.HORIZONTAL, true, true, true);
+        
+        CategoryPlot barChartPlot_DiscoDuro = barChart_DiscoDuro.getCategoryPlot();
+        CategoryPlot barChartPlot_Impresora = barChart_Impresora.getCategoryPlot();
+        CategoryPlot barChartPlot_Teclado = barChart_Teclado.getCategoryPlot();
+        
+        BarRenderer br_DiscoDuro = (BarRenderer) barChartPlot_DiscoDuro.getRenderer();
+        br_DiscoDuro.setMaximumBarWidth(.30);
+        BarRenderer br_Impresora = (BarRenderer) barChartPlot_Impresora.getRenderer();
+        br_Impresora.setMaximumBarWidth(.30);
+        BarRenderer br_Teclado = (BarRenderer) barChartPlot_Teclado.getRenderer();
+        br_Teclado.setMaximumBarWidth(.30);
+        barChartPlot_DiscoDuro.getRenderer().setSeriesPaint(0, new Color(0, 255, 0));
+        barChartPlot_DiscoDuro.getRenderer().setSeriesPaint(1, new Color(0, 0, 255));
+        barChartPlot_DiscoDuro.getRenderer().setSeriesPaint(2, new Color(0, 230, 255));
+        
+        barChartPlot_Impresora.getRenderer().setSeriesPaint(0, new Color(0, 255, 0));
+        barChartPlot_Impresora.getRenderer().setSeriesPaint(1, new Color(0, 0, 255));
+        barChartPlot_Impresora.getRenderer().setSeriesPaint(2, new Color(0, 230, 255));
+        
+        barChartPlot_Teclado.getRenderer().setSeriesPaint(0, new Color(0, 255, 0));
+        barChartPlot_Teclado.getRenderer().setSeriesPaint(1, new Color(0, 0, 255));
+        barChartPlot_Teclado.getRenderer().setSeriesPaint(2, new Color(0, 230, 255));
+        
+        ChartPanel bar_PanelT = new ChartPanel(barChart_Teclado);
+        bar_PanelT.setSize(800, 400);
+        JPanelTeclado.add(bar_PanelT);
+        JPanelTeclado.setSize(800, 400);
+        
+        ChartPanel bar_PanelI = new ChartPanel(barChart_Impresora);
+        bar_PanelI.setSize(800, 400);
+        JPanelImpresora.add(bar_PanelI);
+        JPanelImpresora.setSize(800, 400);
+        
+        ChartPanel bar_PanelD = new ChartPanel(barChart_DiscoDuro);
+        bar_PanelD.setSize(800, 400);
+        JPanelDiscoDuro.add(bar_PanelD);
+        JPanelDiscoDuro.setSize(800, 400);
         hiloActualizarBarras.start();
     }
 
@@ -47,9 +86,12 @@ public class ProcesosIO extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            refrescarTablaContadores("DiscoDuro");
-            refrescarTablaContadores("Impresora");
-            refrescarTablaContadores("Teclado");
+            while (true) {
+                dormir();
+                refrescarTablaContadores("DiscoDuro");
+                refrescarTablaContadores("Impresora");
+                refrescarTablaContadores("Teclado");
+            }
         }
     }
 
@@ -65,13 +107,14 @@ public class ProcesosIO extends javax.swing.JFrame {
         jFrame1 = new javax.swing.JFrame();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        JPanelDiscoDuro = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanelTeclado = new javax.swing.JPanel();
-        jPanelDiscoDuro = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        JPanelImpresora = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jPanelImpresora = new javax.swing.JPanel();
+        JPanelTeclado = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -88,31 +131,37 @@ public class ProcesosIO extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(1280, 720));
         setResizable(false);
 
+        JPanelDiscoDuro.setPreferredSize(new java.awt.Dimension(800, 400));
+
+        javax.swing.GroupLayout JPanelDiscoDuroLayout = new javax.swing.GroupLayout(JPanelDiscoDuro);
+        JPanelDiscoDuro.setLayout(JPanelDiscoDuroLayout);
+        JPanelDiscoDuroLayout.setHorizontalGroup(
+            JPanelDiscoDuroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        JPanelDiscoDuroLayout.setVerticalGroup(
+            JPanelDiscoDuroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1711, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(111, 111, 111)
+                .addComponent(JPanelDiscoDuro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(870, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 473, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(JPanelDiscoDuro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Disco Duro", jPanel1);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1711, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 473, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Impresora", jPanel3);
 
         jPanelTeclado.setPreferredSize(new java.awt.Dimension(800, 600));
 
@@ -120,24 +169,11 @@ public class ProcesosIO extends javax.swing.JFrame {
         jPanelTeclado.setLayout(jPanelTecladoLayout);
         jPanelTecladoLayout.setHorizontalGroup(
             jPanelTecladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGap(0, 469, Short.MAX_VALUE)
         );
         jPanelTecladoLayout.setVerticalGroup(
             jPanelTecladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
-        );
-
-        jPanelDiscoDuro.setPreferredSize(new java.awt.Dimension(800, 400));
-
-        javax.swing.GroupLayout jPanelDiscoDuroLayout = new javax.swing.GroupLayout(jPanelDiscoDuro);
-        jPanelDiscoDuro.setLayout(jPanelDiscoDuroLayout);
-        jPanelDiscoDuroLayout.setHorizontalGroup(
-            jPanelDiscoDuroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
-        );
-        jPanelDiscoDuroLayout.setVerticalGroup(
-            jPanelDiscoDuroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGap(0, 358, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -145,24 +181,51 @@ public class ProcesosIO extends javax.swing.JFrame {
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(93, 93, 93)
-                .addComponent(jPanelDiscoDuro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(257, 257, 257)
+                .addComponent(jPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(1055, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addComponent(jPanelDiscoDuro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(82, Short.MAX_VALUE)
+                .addComponent(jPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
 
         jTabbedPane1.addTab("Teclado", jPanel5);
+
+        JPanelImpresora.setPreferredSize(new java.awt.Dimension(800, 400));
+
+        javax.swing.GroupLayout JPanelImpresoraLayout = new javax.swing.GroupLayout(JPanelImpresora);
+        JPanelImpresora.setLayout(JPanelImpresoraLayout);
+        JPanelImpresoraLayout.setHorizontalGroup(
+            JPanelImpresoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        JPanelImpresoraLayout.setVerticalGroup(
+            JPanelImpresoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(706, Short.MAX_VALUE)
+                .addComponent(JPanelImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(275, 275, 275))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(46, Short.MAX_VALUE)
+                .addComponent(JPanelImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
+        );
+
+        jTabbedPane1.addTab("Impresora", jPanel3);
 
         jLabel1.setText("PROCESOS I/O");
 
@@ -173,14 +236,16 @@ public class ProcesosIO extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanelImpresoraLayout = new javax.swing.GroupLayout(jPanelImpresora);
-        jPanelImpresora.setLayout(jPanelImpresoraLayout);
-        jPanelImpresoraLayout.setHorizontalGroup(
-            jPanelImpresoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        JPanelTeclado.setPreferredSize(new java.awt.Dimension(800, 400));
+
+        javax.swing.GroupLayout JPanelTecladoLayout = new javax.swing.GroupLayout(JPanelTeclado);
+        JPanelTeclado.setLayout(JPanelTecladoLayout);
+        JPanelTecladoLayout.setHorizontalGroup(
+            JPanelTecladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 800, Short.MAX_VALUE)
         );
-        jPanelImpresoraLayout.setVerticalGroup(
-            jPanelImpresoraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        JPanelTecladoLayout.setVerticalGroup(
+            JPanelTecladoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 400, Short.MAX_VALUE)
         );
 
@@ -189,7 +254,7 @@ public class ProcesosIO extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(1570, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(163, 163, 163))
             .addGroup(layout.createSequentialGroup()
@@ -199,8 +264,8 @@ public class ProcesosIO extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(177, 177, 177)
-                        .addComponent(jPanelImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(763, Short.MAX_VALUE))
+                        .addComponent(JPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -212,9 +277,9 @@ public class ProcesosIO extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
-                .addComponent(jPanelImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(82, 82, 82)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 191, Short.MAX_VALUE)
+                .addComponent(JPanelTeclado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
                 .addComponent(jButton1)
                 .addGap(25, 25, 25))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,6 +330,13 @@ public class ProcesosIO extends javax.swing.JFrame {
             }
         });
     }
+    void dormir(){
+        try {
+            hiloActualizarBarras.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ProcesosIO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void refrescarTablaContadores(String tipo) {
         int ejecutando = 0;
@@ -275,25 +347,25 @@ public class ProcesosIO extends javax.swing.JFrame {
 
         switch (tipo) {
             case "Teclado": {
-                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(0).size();
-                listos = proyectoSistemasOperativos.ListaColasIO.get(1).size();
-                terminados = proyectoSistemasOperativos.ListaColasIO.get(2).size();
+                listos = proyectoSistemasOperativos.ListaColasIO.get(0).get(1).size();
+                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(0).get(2).size();
+                terminados = proyectoSistemasOperativos.ListaColasIO.get(0).get(3).size();
                 barChart = barChart_Teclado;
-                jPanelBar = jPanelTeclado;
+                jPanelBar = JPanelTeclado;
             }
             case "DiscoDuro": {
-                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(0).size();
-                listos = proyectoSistemasOperativos.ListaColasIO.get(1).size();
-                terminados = proyectoSistemasOperativos.ListaColasIO.get(2).size();
+                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(1).get(0).size();
+                listos = proyectoSistemasOperativos.ListaColasIO.get(1).get(1).size();
+                terminados = proyectoSistemasOperativos.ListaColasIO.get(1).get(2).size();
                 barChart = barChart_DiscoDuro;
-                jPanelBar = jPanelDiscoDuro;
+                jPanelBar = JPanelDiscoDuro;
             }
             case "Impresora": {
-                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(0).size();
-                listos = proyectoSistemasOperativos.ListaColasIO.get(1).size();
-                terminados = proyectoSistemasOperativos.ListaColasIO.get(2).size();
+                listos = proyectoSistemasOperativos.ListaColasIO.get(2).get(1).size();
+                ejecutando = proyectoSistemasOperativos.ListaColasIO.get(2).get(2).size();
+                terminados = proyectoSistemasOperativos.ListaColasIO.get(2).get(3).size();
                 barChart = barChart_Impresora;
-                jPanelBar = jPanelImpresora;
+                jPanelBar = JPanelImpresora;
             }
         }
 
@@ -310,28 +382,19 @@ public class ProcesosIO extends javax.swing.JFrame {
         CategoryPlot barChartPlot = barChart.getCategoryPlot();
         barChartPlot.setDataset(dataset);
 
-        BarRenderer br = (BarRenderer) barChartPlot.getRenderer();
-        br.setMaximumBarWidth(.30);
-        barChartPlot.getRenderer().setSeriesPaint(0, new Color(0, 255, 0));
-        barChartPlot.getRenderer().setSeriesPaint(1, new Color(0, 0, 255));
-        barChartPlot.getRenderer().setSeriesPaint(2, new Color(0, 230, 255));
-
-        ChartPanel bar_Panel = new ChartPanel(barChart);
-        bar_Panel.setSize(800, 400);
-
-        jPanelBar.add(bar_Panel);
-        jPanelBar.setSize(800, 400);
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel JPanelDiscoDuro;
+    private javax.swing.JPanel JPanelImpresora;
+    private javax.swing.JPanel JPanelTeclado;
     private javax.swing.JButton jButton1;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
-    private static javax.swing.JPanel jPanelDiscoDuro;
-    private javax.swing.JPanel jPanelImpresora;
     private static javax.swing.JPanel jPanelTeclado;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
