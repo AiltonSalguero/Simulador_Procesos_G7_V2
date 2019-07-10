@@ -27,7 +27,46 @@ public class ProyectoSistemasOperativos {
     //Lista para almacenar los procesos terminados - estado: "Terminado" (lista)
     public static ArrayList<Pcb> procesosTerminados = new ArrayList<>();
     //ArrayList de un elemento (un procesador): almacena el proceso en ejecución - estado: "Ejecutándose"
-    static ArrayList<Pcb> procesoEjecutandose = new ArrayList<>();
+    public static ArrayList<Pcb> procesoEjecutandose = new ArrayList<>();
+
+    // Lista1: para almacenar los valores originales de creación de los procesos padres
+    public static ArrayList<Pcb> procesosPadresOriginal = new ArrayList<>();
+    // Lista2: la cual será trabajada (modificada) en cada política
+    public static ArrayList<Pcb> procesosPadres = new ArrayList<>();
+
+    //Parámetros para generación de procesos de usuario (Procesos padre)
+    public static int cantidadProcesos = 5; //Cantidad de procesos padres (de usuario) a simular
+    public static int burstTimeMinimo = 50; //Cota mínima para asignar burst time a un proceso padre
+    public static int burstTimeMaximo = 80; //Cota máxima para asignar burst time a un proceso padre
+    public static int TiempoLlegadaMinimo = 0; //Cota mínima para asignar tiempo de llegada de un proceso padre
+    public static int TiempoLlegadaMaximo = 10; //Cota máxima para asignar tiempo de llegada de un proceso padre
+
+    //Parámetros para generación de procesos hijo
+    public static int probabilidadCrearHijo = 5; //Probabilidad máxima que permite crear un proceso hijo
+    public static int burstTimeMinimoHijo = 10; //Cota mínima para asignar burst time a un proceso hijo
+    public static int burstTimeMaximoHijo = 15; //Cota máxima para asignar burst time a un proceso hijo
+
+    //Parámetros para reloj de ejecución
+    public static int tiempoDelayReloj = 1; //Simula el tiempo del compilador por ciclo de ejecución en el programa (unidad: ns)
+    public static int tiempo = 0; //inicia tiempo de simulación en 0 (unidad: s)
+
+    //Variable de control
+    //int procesosSinTerminar=1;// La simulación terminará cuando sea 0, inidicialmente 1 para que se inicie
+    public static boolean procesosSinTerminar = true;// La simulación terminará cuando sea false
+    public static int cuantoRR = 20;
+
+    //Variable de eventos
+    public static boolean seCreoHijo = false;// Variable que indica si ocurre evento "crear hijo"
+
+    //Variable de cuadre
+    public static int totalBurstTimePadres = 0;// Variable para contabilizar el total de burst time de todos los padres
+    public static int totalBurstTimeHijos = 0;// Variable para contabilizar el total de burst time de todos los hijos
+
+    //Variables de retorno múltimple
+    public static BooleanInt seCreoHijoTotalBurstTimeHijo = new BooleanInt();
+    
+    public static ArrayList<RecursoHardware> recursosHardware = new ArrayList<>();
+    public static ArrayList<Politica> politicasSistema = new ArrayList<>();
 
     /**
      * @param args the command line arguments
@@ -37,52 +76,13 @@ public class ProyectoSistemasOperativos {
     }
 
     public static void iniciar() {
-        //Parámetros para generación de procesos de usuario (Procesos padre)
-        int cantidadProcesos = 5; //Cantidad de procesos padres (de usuario) a simular
-        int burstTimeMinimo = 50; //Cota mínima para asignar burst time a un proceso padre
-        int burstTimeMaximo = 80; //Cota máxima para asignar burst time a un proceso padre
-        int TiempoLlegadaMinimo = 0; //Cota mínima para asignar tiempo de llegada de un proceso padre
-        int TiempoLlegadaMaximo = 10; //Cota máxima para asignar tiempo de llegada de un proceso padre
-
-        //Parámetros para generación de procesos hijo
-        int probabilidadCrearHijo = 5; //Probabilidad máxima que permite crear un proceso hijo
-        int burstTimeMinimoHijo = 10; //Cota mínima para asignar burst time a un proceso hijo
-        int burstTimeMaximoHijo = 15; //Cota máxima para asignar burst time a un proceso hijo
-
-        //Parámetros para reloj de ejecución
-        int tiempoDelayReloj = 1; //Simula el tiempo del compilador por ciclo de ejecución en el programa (unidad: ns)
-        int tiempo = 0; //inicia tiempo de simulación en 0 (unidad: s)
-
-        //Variable de control
-        //int procesosSinTerminar=1;// La simulación terminará cuando sea 0, inidicialmente 1 para que se inicie
-        boolean procesosSinTerminar = true;// La simulación terminará cuando sea false
-        int cuantoRR = 20;
-
-        //Variable de eventos
-        boolean seCreoHijo = false;// Variable que indica si ocurre evento "crear hijo"
-
-        //Variable de cuadre
-        int totalBurstTimePadres = 0;// Variable para contabilizar el total de burst time de todos los padres
-        int totalBurstTimeHijos = 0;// Variable para contabilizar el total de burst time de todos los hijos
-
-        //Variables de retorno múltimple
-        BooleanInt seCreoHijoTotalBurstTimeHijo = new BooleanInt();
-
         //Creación de los recursos de hardware del computador
-        ArrayList<RecursoHardware> recursosHardware = new ArrayList<>();
         utilitarios.Configuracion.CrearRecursos(recursosHardware);
-
         //Creación de políticas del sistema
-        ArrayList<Politica> politicasSistema = new ArrayList<>();
         utilitarios.Configuracion.CrearPoliticas(politicasSistema);
-
         //Creación de los procesos padres
-        // Lista1: para almacenar los valores originales de creación de los procesos padres
-        ArrayList<Pcb> procesosPadresOriginal = new ArrayList<>();
         totalBurstTimePadres = utilitarios.Configuracion.CrearProcesos(cantidadProcesos, burstTimeMinimo,
                 burstTimeMaximo, TiempoLlegadaMinimo, TiempoLlegadaMaximo, procesosPadresOriginal, totalBurstTimePadres);
-        // Lista2: la cual será trabajada (modificada) en cada política
-        ArrayList<Pcb> procesosPadres = new ArrayList<>();
         HerramientasUtiles.copiarListaPadres(procesosPadres, procesosPadresOriginal);
 
 //        //Preparación de las listas manejadas por el programa: listas y colas
@@ -93,7 +93,6 @@ public class ProyectoSistemasOperativos {
 //        procesosBloqueados = new ArrayList<>();
 //        procesosTerminados = new ArrayList<>();
 //        procesoEjecutandose = new ArrayList<>();
-
         //Lista para almacenar las listas y colas de los dispositivos IO
         ArrayList<ArrayList<ArrayList<PcbIO>>> ListaColasIO = new ArrayList<>(3);
         ListaColasIO = HerramientasUtiles.CrearListaDeColasIO(recursosHardware, ListaColasIO);
@@ -163,10 +162,10 @@ public class ProyectoSistemasOperativos {
                         procesosHijos, procesoEjecutandose, ListaColasIO, tiempo);
 
                 // TODO Esto es removible - facilita visualizacón, en ventana de comando, del estado del recrurso
-                System.out.println("recuso: " + recursosHardware.get(0).toString());
-                System.out.println("recuso: " + recursosHardware.get(1).toString());
-                System.out.println("recuso: " + recursosHardware.get(2).toString());
-                System.out.println("recuso: " + recursosHardware.get(3).toString());
+                System.out.println("recurso: " + recursosHardware.get(0).toString());
+                System.out.println("recurso: " + recursosHardware.get(1).toString());
+                System.out.println("recurso: " + recursosHardware.get(2).toString());
+                System.out.println("recurso: " + recursosHardware.get(3).toString());
 
                 //(5) Ejecutar una ráfaga de los procesos en ejecución
                 //(5.1) Actualizar PC del proceso en ejecución

@@ -5,11 +5,9 @@
  */
 package ventanas;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import proyectosistemasoperativos.Pcb;
 import proyectosistemasoperativos.ProyectoSistemasOperativos;
@@ -26,6 +24,8 @@ public class SimuladorProcesos extends javax.swing.JFrame {
     ProyectoSistemasOperativos proyectoSistemasOperativos;
     public Thread hiloProcesos = new Thread(new HiloProcesos());
     public Thread hiloActualizarGUI = new Thread(new HiloActualizarGUI());
+    boolean actualizoTablaPadresOriginales = false;
+    boolean algoritmoPausado = false;
 
     public SimuladorProcesos() {
         initComponents();
@@ -33,13 +33,22 @@ public class SimuladorProcesos extends javax.swing.JFrame {
     }
 
     void iniciarProcesos() {
-        DefaultTableModel procGeneralesModel = (DefaultTableModel) tblProcesosGenerales.getModel();
-
-        DefaultTableModel procTerminadosModel = (DefaultTableModel) tblProcesosTerminados.getModel();
         hiloProcesos.start();
-
+        dormir();
         hiloActualizarGUI.start();
+    }
 
+    private void dormir() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SimuladorProcesos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void pausarAlgoritmo() {
+        hiloProcesos.suspend();
+        algoritmoPausado = true;
     }
 
     /**
@@ -57,19 +66,23 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tblProcesosTerminados = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblProcesosListos = new javax.swing.JTable();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblProcesosGenerales = new javax.swing.JTable();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tblProcesosBloqueados = new javax.swing.JTable();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tblProcesosTerminados = new javax.swing.JTable();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tblProcesosEjecutandose = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblProcesosPadre = new javax.swing.JTable();
+        tblProcesosPadresOriginales = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -86,7 +99,7 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(1084, Short.MAX_VALUE)
+                .addContainerGap(1265, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addGap(154, 154, 154))
         );
@@ -104,7 +117,7 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1265, Short.MAX_VALUE)
+            .addGap(0, 1446, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -113,42 +126,11 @@ public class SimuladorProcesos extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("SJF Expropiativo", jPanel3);
 
-        tblProcesosTerminados.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "ID Proceso", "Burst Time", "Tiempo Llegada", "Residuo", "Estado"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane3.setViewportView(tblProcesosTerminados);
-        if (tblProcesosTerminados.getColumnModel().getColumnCount() > 0) {
-            tblProcesosTerminados.getColumnModel().getColumn(0).setResizable(false);
-            tblProcesosTerminados.getColumnModel().getColumn(1).setResizable(false);
-            tblProcesosTerminados.getColumnModel().getColumn(2).setResizable(false);
-            tblProcesosTerminados.getColumnModel().getColumn(3).setResizable(false);
-            tblProcesosTerminados.getColumnModel().getColumn(4).setResizable(false);
-        }
-
         jLabel5.setText("Lista Procesos Generales");
 
         tblProcesosListos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "ID Proceso", "Burst Time", "Tiempo Llegada", "Residuo", "Estado"
@@ -173,10 +155,7 @@ public class SimuladorProcesos extends javax.swing.JFrame {
 
         tblProcesosGenerales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "ID Proceso", "Burst Time", "Tiempo Llegada", "Residuo", "Estado"
@@ -199,6 +178,81 @@ public class SimuladorProcesos extends javax.swing.JFrame {
             tblProcesosGenerales.getColumnModel().getColumn(4).setResizable(false);
         }
 
+        tblProcesosBloqueados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID Proceso", "Burst Time", "Tiempo Llegada", "Residuo", "Estado"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane6.setViewportView(tblProcesosBloqueados);
+        if (tblProcesosBloqueados.getColumnModel().getColumnCount() > 0) {
+            tblProcesosBloqueados.getColumnModel().getColumn(0).setResizable(false);
+            tblProcesosBloqueados.getColumnModel().getColumn(1).setResizable(false);
+            tblProcesosBloqueados.getColumnModel().getColumn(2).setResizable(false);
+            tblProcesosBloqueados.getColumnModel().getColumn(3).setResizable(false);
+            tblProcesosBloqueados.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        tblProcesosTerminados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID Proceso", "Burst Time", "Tiempo Llegada", "Residuo", "Estado"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane7.setViewportView(tblProcesosTerminados);
+        if (tblProcesosTerminados.getColumnModel().getColumnCount() > 0) {
+            tblProcesosTerminados.getColumnModel().getColumn(0).setResizable(false);
+            tblProcesosTerminados.getColumnModel().getColumn(1).setResizable(false);
+            tblProcesosTerminados.getColumnModel().getColumn(2).setResizable(false);
+            tblProcesosTerminados.getColumnModel().getColumn(3).setResizable(false);
+            tblProcesosTerminados.getColumnModel().getColumn(4).setResizable(false);
+        }
+
+        tblProcesosEjecutandose.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID Proceso", "Burst Time", "Tiempo Llegada", "Residuo", "Estado"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane8.setViewportView(tblProcesosEjecutandose);
+        if (tblProcesosEjecutandose.getColumnModel().getColumnCount() > 0) {
+            tblProcesosEjecutandose.getColumnModel().getColumn(0).setResizable(false);
+            tblProcesosEjecutandose.getColumnModel().getColumn(1).setResizable(false);
+            tblProcesosEjecutandose.getColumnModel().getColumn(2).setResizable(false);
+            tblProcesosEjecutandose.getColumnModel().getColumn(3).setResizable(false);
+            tblProcesosEjecutandose.getColumnModel().getColumn(4).setResizable(false);
+        }
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -206,26 +260,44 @@ public class SimuladorProcesos extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(311, Short.MAX_VALUE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(497, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(487, 487, 487))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(248, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(17, 17, 17)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(130, 130, 130))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(117, 117, 117))))
         );
 
         jTabbedPane1.addTab("SJF No Expropiativo", jPanel2);
@@ -234,7 +306,7 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1265, Short.MAX_VALUE)
+            .addGap(0, 1446, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -247,7 +319,7 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1265, Short.MAX_VALUE)
+            .addGap(0, 1446, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,13 +336,15 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         });
 
         jButton5.setText("Pausa");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
-        tblProcesosPadre.setModel(new javax.swing.table.DefaultTableModel(
+        tblProcesosPadresOriginales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "ID Proceso", "Burst-Time", "Tiempo Llegada", "Residuo", "Estado"
@@ -284,12 +358,12 @@ public class SimuladorProcesos extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblProcesosPadre);
-        if (tblProcesosPadre.getColumnModel().getColumnCount() > 0) {
-            tblProcesosPadre.getColumnModel().getColumn(0).setResizable(false);
-            tblProcesosPadre.getColumnModel().getColumn(1).setResizable(false);
-            tblProcesosPadre.getColumnModel().getColumn(3).setResizable(false);
-            tblProcesosPadre.getColumnModel().getColumn(4).setResizable(false);
+        jScrollPane1.setViewportView(tblProcesosPadresOriginales);
+        if (tblProcesosPadresOriginales.getColumnModel().getColumnCount() > 0) {
+            tblProcesosPadresOriginales.getColumnModel().getColumn(0).setResizable(false);
+            tblProcesosPadresOriginales.getColumnModel().getColumn(1).setResizable(false);
+            tblProcesosPadresOriginales.getColumnModel().getColumn(3).setResizable(false);
+            tblProcesosPadresOriginales.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jLabel2.setText("Procesos Padre");
@@ -330,7 +404,7 @@ public class SimuladorProcesos extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton5))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(66, 66, 66)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -343,6 +417,19 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         // TODO add your handling code here:
         iniciarProcesos();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (algoritmoPausado) {
+            renaurarAlgoritmo();
+        } else {
+            pausarAlgoritmo();
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void renaurarAlgoritmo() {
+        hiloProcesos.resume();
+        algoritmoPausado = false;
+    }
 
     /**
      * @param args the command line arguments
@@ -379,6 +466,89 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         });
     }
 
+    private void mostrarProcesosPadres() {
+        DefaultTableModel procGeneralesModel = (DefaultTableModel) tblProcesosPadresOriginales.getModel();
+        System.out.println("8888888 " + procGeneralesModel.getRowCount());
+        ArrayList<Pcb> padresOriginal = proyectoSistemasOperativos.procesosPadresOriginal;
+
+        for (Pcb proceso : padresOriginal) {
+            Object[] proc = new Object[5];
+            proc[0] = Integer.toString(proceso.getCodigo());
+            proc[1] = Integer.toString(proceso.getBurstTime());
+            proc[2] = Integer.toString(proceso.getTiempoLlegada());
+            proc[3] = Integer.toString(proceso.getTiempoTermino());
+            proc[4] = proceso.getEstado();
+            procGeneralesModel.addRow(proc);
+        }
+        tblProcesosPadresOriginales.setModel(procGeneralesModel);
+    }
+
+    private void actualizarTablasProcesos(String tipo) {
+        dormir();
+        javax.swing.JTable tablaProcesos = new javax.swing.JTable();
+        DefaultTableModel procesosModel = new DefaultTableModel();
+        ArrayList<Pcb> procesos = new ArrayList<Pcb>();
+        switch (tipo) {
+            case "Listos": {
+                tablaProcesos = tblProcesosListos;
+                procesosModel = (DefaultTableModel) tblProcesosListos.getModel();
+                procesos = ProyectoSistemasOperativos.procesosListos;
+                break;
+            }
+            case "Generales": {
+                tablaProcesos = tblProcesosGenerales;
+                procesosModel = (DefaultTableModel) tblProcesosGenerales.getModel();
+                procesos = ProyectoSistemasOperativos.procesosPadres;
+                break;
+            }
+            case "Terminados": {
+                tablaProcesos = tblProcesosTerminados;
+                procesosModel = (DefaultTableModel) tblProcesosTerminados.getModel();
+                procesos = ProyectoSistemasOperativos.procesosTerminados;
+                break;
+            }
+            case "Bloqueados": {
+                tablaProcesos = tblProcesosBloqueados;
+                procesosModel = (DefaultTableModel) tblProcesosBloqueados.getModel();
+                procesos = ProyectoSistemasOperativos.procesosBloqueados;
+                break;
+            }
+            case "Ejecutandose": {
+                tablaProcesos = tblProcesosEjecutandose;
+                procesosModel = (DefaultTableModel) tblProcesosEjecutandose.getModel();
+                procesos = ProyectoSistemasOperativos.procesoEjecutandose;
+                break;
+            }
+        }
+
+        try{
+            for (Pcb proceso : procesos) {
+                Object[] proc = new Object[5];
+                proc[0] = proceso.getCodigo();
+                proc[1] = proceso.getBurstTime();
+                proc[2] = proceso.getTiempoLlegada();
+                proc[3] = proceso.getTiempoTermino();
+                proc[4] = proceso.getEstado();
+                if (procesosModel.getRowCount() == 0) {
+                    procesosModel.addRow(proc);
+                    System.out.println("AGREGADO " + tipo);
+                }
+                boolean diferentes = true;
+                for (int i = 0; i < procesosModel.getRowCount(); i++) {
+                    if ((procesosModel.getValueAt(i, 0) == proc[0])) {
+                        diferentes = false;
+                    }
+                    System.out.println("IGUALES " + tipo);
+                }
+                if (diferentes) {
+                    procesosModel.addRow(proc);
+                }
+            }
+            tablaProcesos.setModel(procesosModel);
+        } catch (Exception e) {
+        }
+    }
+
     private class HiloProcesos implements Runnable { //Objeto de tipo Hilo con extension ejecutable
 
         @Override
@@ -393,27 +563,21 @@ public class SimuladorProcesos extends javax.swing.JFrame {
         @Override
         public void run() {
             while (true) {
-                DefaultTableModel modelo;
-                Object[] miTabla = new Object[5];
-                ArrayList<Pcb> procListos = procListos = ProyectoSistemasOperativos.procesosListos;
-                while (!procListos.isEmpty()) {
-                    try {
-                        System.out.print("**************************NO VACIO***************");
-                        miTabla[0] = proyectoSistemasOperativos.procesosListos.get(0).getCodigo();
-                        miTabla[1] = proyectoSistemasOperativos.procesosListos.get(0).getBurstTime();
-                        miTabla[3] = proyectoSistemasOperativos.procesosListos.get(0).getTiempoLlegada();
-
-//                    DefaultTableModel procListosModel = (DefaultTableModel) tblProcesosListos.getModel();
-//                    procListosModel.addRow(miTabla);
-//                    tblProcesosListos.setModel(procListosModel);
-                        tblProcesosListos.setValueAt("Bloqueado por Interrupción", 0, 0);
-
-                    } catch (Exception e) {
-                    }
-                    System.out.print("**************************VACIO***************");
+                if (!actualizoTablaPadresOriginales) {
+                    mostrarProcesosPadres();
+                    actualizoTablaPadresOriginales = true;
                 }
+                actualizarTablasProcesos("Listos");
+                actualizarTablasProcesos("Generales");
+                actualizarTablasProcesos("Bloqueados");
+                actualizarTablasProcesos("Terminados");
+                actualizarTablasProcesos("Ejecutandose");
+
             }
         }
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
@@ -427,13 +591,17 @@ public class SimuladorProcesos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable tblProcesosBloqueados;
+    private javax.swing.JTable tblProcesosEjecutandose;
     private javax.swing.JTable tblProcesosGenerales;
     private javax.swing.JTable tblProcesosListos;
-    private javax.swing.JTable tblProcesosPadre;
+    private javax.swing.JTable tblProcesosPadresOriginales;
     private javax.swing.JTable tblProcesosTerminados;
     // End of variables declaration//GEN-END:variables
 }
